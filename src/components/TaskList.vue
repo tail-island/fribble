@@ -7,15 +7,17 @@
           <th class="task-name text-left">タスク</th>
           <th class="task-predecessors text-left">先行</th>
           <th class="task-duration text-left">日数</th>
+          <th class="task-skills text-left">スキル</th>
           <th class="task-day" v-for="i in endDay" v-bind:key="i">{{ i }}</th>
         </tr>
       </template>
       <template slot="tbody">
         <tr v-for="(task, index) in tasks" v-bind:key="task.id" v-on:click="setSelectedId(task.id)" v-bind:class="{ selected: task.id === selectedId }">
           <td class="task-index text-right">{{ index + 1 }}</td>
-          <td class="task-name"><span v-html="'&nbsp;&nbsp;'.repeat(indentLevels[index])"></span>{{ task.name }}</td>
-          <td class="task-predecessors">{{ predecessorStrings[index] }}</td>
-          <td class="task-duration text-right">{{ tasks.some(child => child.parentId === task.id) ? "" : task.duration }}</td>
+          <td class="task-name"><span v-html="'&nbsp;&nbsp;'.repeat(taskIndentLevels[index])"></span>{{ task.name }}</td>
+          <td class="task-predecessors">{{ taskPredecessorStrings[index] }}</td>
+          <td class="task-duration text-right">{{ tasks.every(child => child.parentId !== task.id) ? task.duration : "" }}</td>
+          <td class="task-skills">{{ tasks.every(child => child.parentId !== task.id) ? taskSkillStrings[index] : "" }}</td>
           <td class="task-day text-center" v-for="i in endDay" v-bind:key="i">{{ (taskScheduleMap.get(task.id).startDay &lt;= i && i &lt;= taskScheduleMap.get(task.id).endDay) ? "*" : "" }}</td>
         </tr>
       </template>
@@ -119,7 +121,7 @@ export default {
       return this.tasks.length > 0 ? Math.max(...this.tasks.map(task => this.taskScheduleMap.get(task.id).endDay)) : 1
     },
 
-    indentLevels: function () {
+    taskIndentLevels: function () {
       const getIndentLevel = (task) => {
         if (!task.parentId) {
           return 0
@@ -131,8 +133,12 @@ export default {
       return this.tasks.map(getIndentLevel)
     },
 
-    predecessorStrings: function () {
+    taskPredecessorStrings: function () {
       return this.tasks.map(task => task.predecessorIds?.map(predecessorId => this.tasks.findIndex(predecessor => predecessor.id === predecessorId)).map(index => index + 1).sort().join(', '))
+    },
+
+    taskSkillStrings: function () {
+      return this.tasks.map(task => task.skillIds?.map(skillId => this.$store.getters.getSkill(skillId).name).join(', '))
     },
 
     isMoveTaskUpDisabled: function () {
@@ -170,13 +176,13 @@ export default {
     isMoveTaskLeftDisabled: function () {
       const index = this.tasks.findIndex(task => task.id === this.selectedId)
 
-      return !this.selectedId || index === 0 || this.indentLevels[index] === 0
+      return !this.selectedId || index === 0 || this.taskIndentLevels[index] === 0
     },
 
     isMoveTaskRightDisabled: function () {
       const index = this.tasks.findIndex(task => task.id === this.selectedId)
 
-      if (!this.selectedId || index === 0 || this.indentLevels[index] > this.indentLevels[index - 1]) {
+      if (!this.selectedId || index === 0 || this.taskIndentLevels[index] > this.taskIndentLevels[index - 1]) {
         return true
       }
 
@@ -184,7 +190,7 @@ export default {
         this.tasks[index],
         (() => {
           for (let i = index - 1; i >= 0; --i) {
-            if (this.indentLevels[i] === this.indentLevels[index]) {
+            if (this.taskIndentLevels[i] === this.taskIndentLevels[index]) {
               return this.tasks[i]
             }
           }
@@ -237,7 +243,7 @@ export default {
       const index = this.tasks.findIndex(task => task.id === this.selectedId)
 
       for (let i = index - 1; i >= 0; --i) {
-        if (this.indentLevels[i] === this.indentLevels[index] - 1) {
+        if (this.taskIndentLevels[i] === this.taskIndentLevels[index] - 1) {
           this.$store.commit('setTaskParentId', { id: this.selectedId, value: this.tasks[i].parentId })
           break
         }
@@ -248,7 +254,7 @@ export default {
       const index = this.tasks.findIndex(task => task.id === this.selectedId)
 
       for (let i = index - 1; i >= 0; --i) {
-        if (this.indentLevels[i] === this.indentLevels[index]) {
+        if (this.taskIndentLevels[i] === this.taskIndentLevels[index]) {
           this.$store.commit('setTaskParentId', { id: this.selectedId, value: this.tasks[i].id })
           break
         }
@@ -293,15 +299,21 @@ th, td {
 }
 
 .task-predecessors {
-  width: 8em;
-  min-width: 8em;
-  max-width: 8em;
+  width: 4em;
+  min-width: 4em;
+  max-width: 4em;
 }
 
 .task-duration {
   width: 3em;
   min-width: 3em;
   max-width: 3em;
+}
+
+.task-skills {
+  width: 10em;
+  min-width: 10em;
+  max-width: 10em;
 }
 
 .task-day {

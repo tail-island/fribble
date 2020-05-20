@@ -124,8 +124,8 @@ th, td {
 }
 
 .member-skills {
-  width: 20em;
-  min-width: 20em;
-  max-width: 20em;
+  width: 10em;
+  min-width: 10em;
+  max-width: 10em;
 }
 </style>

@@ -42,7 +42,7 @@
       <v-toolbar-title>fribble</v-toolbar-title>
       <v-spacer />
       <v-btn icon>
-        <v-icon>mdi-content-save</v-icon>
+        <v-icon v-on:click="saveQuestion">mdi-content-save</v-icon>
       </v-btn>
     </v-app-bar>
 
@@ -53,10 +53,47 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'App',
   data: () => ({
     drawer: null
-  })
+  }),
+  methods: {
+    readQuestion: async function () {
+      const capitalize = string => `${string.charAt(0).toUpperCase()}${string.slice(1)}`
+
+      const addEntities = (entities, entityName, propertyNames) => {
+        for (const entity of entities) {
+          this.$store.commit(`add${capitalize(entityName)}`, { id: entity.id })
+
+          for (const propertyName of propertyNames) {
+            this.$store.commit(`set${capitalize(entityName)}${capitalize(propertyName)}`, { id: entity.id, value: entity[propertyName] })
+          }
+        }
+      }
+
+      const response = await axios.get('/question')
+
+      addEntities(response.data.skills, 'skill', ['name'])
+      addEntities(response.data.tasks, 'task', ['name', 'duration', 'predecessorIds', 'skillIds', 'parentId'])
+      addEntities(response.data.members, 'member', ['name', 'skillIds'])
+      addEntities(response.data.taskSchedules, 'taskSchedules', ['taskId', 'memberId', 'startDay', 'endDay'])
+    },
+
+    saveQuestion: async function () {
+      await axios.post('/question', this.$store.state)
+
+      console.log('saved!')
+    }
+  },
+  created: function () {
+    if (this.$store.state.skills.length > 0) {
+      return
+    }
+
+    this.readQuestion()
+  }
 }
 </script>

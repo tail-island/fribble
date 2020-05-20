@@ -66,7 +66,7 @@ const override = (state, section, name, createFunction) => {
 }
 
 const skills = createEntityStore('skill', ['name'])
-const tasks = createEntityStore('task', ['name', 'duration', 'predecessorIds', 'parentId'])
+const tasks = createEntityStore('task', ['name', 'duration', 'predecessorIds', 'skillIds', 'parentId'])
 const members = createEntityStore('member', ['name', 'skillIds'])
 const taskSchedules = createEntityStore('taskSchedule', ['taskId', 'memberId', 'startDay', 'endDay'])
 
@@ -260,6 +260,6 @@ export default new Vuex.Store({
     skills: skills,
     tasks: tasks,
     members: members,
-    taskShedules: taskSchedules
+    taskSchedules: taskSchedules
   }
 })

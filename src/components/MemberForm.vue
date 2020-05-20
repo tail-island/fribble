@@ -7,7 +7,7 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <v-select v-model="memberSkillIds" v-bind:items="skills" item-text="name" item-value="id" v-bind:disabled="disabled" multiple label="スキル" />
+        <v-select v-model="memberSkillIds" v-bind:items="skillCandidates" item-text="name" item-value="id" v-bind:disabled="disabled" multiple label="スキル" />
       </v-col>
     </v-row>
   </v-container>
@@ -30,7 +30,7 @@ export default {
       return !this.memberId
     },
 
-    skills: function () {
+    skillCandidates: function () {
       return this.$store.state.skills
     },
 

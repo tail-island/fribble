@@ -11,6 +11,11 @@
         <v-select v-model="taskDuration" v-bind:items="durations" v-bind:disabled="disabled" label="日数" />
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="12">
+        <v-select v-model="taskSkillIds" v-bind:items="skillCandidates" item-text="name" item-value="id" v-bind:disabled="disabled" multiple label="スキル" />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -44,6 +49,10 @@ export default {
       })
     },
 
+    skillCandidates: function () {
+      return this.$store.state.skills
+    },
+
     taskName: {
       get () {
         return this.$store.getters.getTask(this.taskId)?.name
@@ -68,6 +77,15 @@ export default {
       },
       set (value) {
         this.$store.commit('setTaskDuration', { id: this.taskId, value: value })
+      }
+    },
+
+    taskSkillIds: {
+      get () {
+        return this.$store.getters.getTask(this.taskId)?.skillIds
+      },
+      set (value) {
+        this.$store.commit('setTaskSkillIds', { id: this.taskId, value: value })
       }
     }
   }
