@@ -69,6 +69,9 @@ export default {
           this.$store.commit(`add${capitalize(entityName)}`, { id: entity.id })
 
           for (const propertyName of propertyNames) {
+            if (!entity[propertyName]) {
+              continue
+            }
             this.$store.commit(`set${capitalize(entityName)}${capitalize(propertyName)}`, { id: entity.id, value: entity[propertyName] })
           }
         }
