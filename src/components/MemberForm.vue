@@ -1,13 +1,13 @@
 <template>
   <v-container fluid>
-    <v-row>
+    <v-row dense>
       <v-col cols="12">
-        <v-text-field ref="memberNameTextField" v-model="memberName" v-bind:disabled="disabled" label="氏名" />
+        <v-text-field ref="memberNameTextField" v-model="memberName" v-bind:disabled="disabled" label="氏名" dense />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row dense>
       <v-col cols="12">
-        <v-select v-model="memberSkillIds" v-bind:items="skillCandidates" item-text="name" item-value="id" v-bind:disabled="disabled" multiple label="スキル" />
+        <v-select v-model="memberSkillIds" v-bind:items="skillCandidates" item-text="name" item-value="id" v-bind:disabled="disabled" multiple label="スキル" dense />
       </v-col>
     </v-row>
   </v-container>

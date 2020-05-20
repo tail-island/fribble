@@ -1,19 +1,23 @@
 <template>
   <v-container fluid>
-    <v-row>
+    <v-row dense>
       <v-col cols="12">
-        <v-text-field ref="taskNameTextField" v-model="taskName" v-bind:disabled="disabled" label="名称" />
-      </v-col>
-      <v-col cols="12">
-        <v-select v-model="taskPredecessorIds" v-bind:items="predecessorCandidates" item-text="name" item-value="id" v-bind:disabled="disabled" multiple label="先行" />
-      </v-col>
-      <v-col cols="12">
-        <v-select v-model="taskDuration" v-bind:items="durations" v-bind:disabled="disabled" label="日数" />
+        <v-text-field ref="taskNameTextField" v-model="taskName" v-bind:disabled="disabled" label="名称" dense />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row dense>
       <v-col cols="12">
-        <v-select v-model="taskSkillIds" v-bind:items="skillCandidates" item-text="name" item-value="id" v-bind:disabled="disabled" multiple label="スキル" />
+        <v-select v-model="taskPredecessorIds" v-bind:items="predecessorCandidates" item-text="name" item-value="id" v-bind:disabled="disabled" multiple label="先行" dense />
+      </v-col>
+    </v-row>
+    <v-row dense>
+      <v-col cols="12">
+        <v-select v-model="taskDuration" v-bind:items="durations" v-bind:disabled="disabled" label="日数" dense />
+      </v-col>
+    </v-row>
+    <v-row dense>
+      <v-col cols="12">
+        <v-select v-model="taskSkillIds" v-bind:items="skillCandidates" item-text="name" item-value="id" v-bind:disabled="disabled" multiple label="スキル" dense />
       </v-col>
     </v-row>
   </v-container>

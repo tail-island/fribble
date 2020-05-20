@@ -1,8 +1,8 @@
 <template>
   <v-container fluid>
-    <v-row>
+    <v-row dense>
       <v-col cols="12">
-        <v-text-field ref="skillNameTextField" v-model="skillName" v-bind:disabled="disabled" label="名称" />
+        <v-text-field ref="skillNameTextField" v-model="skillName" v-bind:disabled="disabled" label="名称" dense />
       </v-col>
     </v-row>
   </v-container>
